@@ -1189,6 +1189,20 @@ function newButton(name, description, onClick)
     btn.Parent = ScrollingFrame
 end
 
+local Icons = {
+    RemoteEvent      = "rbxassetid://76849082320169",
+    RemoteFunction   = "rbxassetid://109202898110957",
+    BindableEvent    = "rbxassetid://98849709807755",
+    BindableFunction = "rbxassetid://96448937828710",
+}
+
+local IconColors = {
+    RemoteEvent      = Color3.fromRGB(78, 33, 255),
+    RemoteFunction   = Color3.fromRGB(33, 150, 243),
+    BindableEvent    = Color3.fromRGB(255, 140, 0),
+    BindableFunction = Color3.fromRGB(0, 180, 120),
+}
+
 function newRemote(type, data)
     if layoutOrderNum < 1 then layoutOrderNum = 999999999 end
     local remote = data.remote
@@ -1199,12 +1213,18 @@ function newRemote(type, data)
     item.LayoutOrder = layoutOrderNum
     item.Name = "Remote_" .. layoutOrderNum
 
+    local className = remote.ClassName
     local iconFrame = item:FindFirstChild("Content") and item.Content:FindFirstChild("Icon")
     if iconFrame then
-        iconFrame.ImageColor3 = type == "event"
-            and Color3.fromRGB(78, 33, 255)
-            or  Color3.fromRGB(33, 150, 243)
+        iconFrame.ImageColor3 = IconColors[className] or IconColors.RemoteEvent
+        iconFrame.BackgroundTransparency = 1
+        local innerIcon = iconFrame:FindFirstChild("Content") and iconFrame.Content:FindFirstChild("Icon")
+        if innerIcon then
+            innerIcon.Image = Icons[className] or Icons.RemoteEvent
+            innerIcon.ImageColor3 = Color3.fromRGB(255, 255, 255)
+        end
     end
+
     local titleLabel = item:FindFirstChild("Content") and item.Content:FindFirstChild("Title")
     if titleLabel then titleLabel.Text = remote.Name end
 
