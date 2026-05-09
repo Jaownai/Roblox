@@ -12,15 +12,11 @@ local realconfigs = {
 
 local configs = newproxy(true)
 local configsmetatable = getmetatable(configs)
-
-configsmetatable.__index = function(self, index)
-    return realconfigs[index]
-end
+configsmetatable.__index = function(self, index) return realconfigs[index] end
 
 local oth = syn and syn.oth
 local unhook = oth and oth.unhook
 local hook = oth and oth.hook
-
 local lower = string.lower
 local byte = string.byte
 local running = coroutine.running
@@ -31,7 +27,6 @@ local create = coroutine.create
 local close = coroutine.close
 local OldDebugId = game.GetDebugId
 local info = debug.info
-
 local IsA = game.IsA
 local tostring = tostring
 local tonumber = tonumber
@@ -46,11 +41,9 @@ local get_thread_identity = (syn and syn.get_thread_identity) or getidentity or 
 local set_thread_identity = (syn and syn.set_thread_identity) or setidentity
 local islclosure = islclosure or is_l_closure
 local threadfuncs = (get_thread_identity and set_thread_identity) and true or false
-
 local getinfo = getinfo or blankfunction
 local getupvalues = getupvalues or debug.getupvalues or blankfunction
 local getconstants = getconstants or debug.getconstants or blankfunction
-
 local getcustomasset = getsynasset or getcustomasset
 local getcallingscript = getcallingscript or blankfunction
 local newcclosure = newcclosure or blankfunction
@@ -76,17 +69,6 @@ local hookmetamethod = hookmetamethod or (makewriteable and makereadonly and get
         makereadonly(old)
         return oldmeta
     end
-end
-
-local function Create(instance, properties, children)
-    local obj = Instance.new(instance)
-    for i, v in next, properties or {} do
-        obj[i] = v
-        for _, child in next, children or {} do
-            child.Parent = obj
-        end
-    end
-    return obj
 end
 
 local function SafeGetService(service)
@@ -163,10 +145,12 @@ function ErrorPrompt(Message, state)
     if getrenv then
         local EP = getrenv().require(CoreGui:WaitForChild("RobloxGui"):WaitForChild("Modules"):WaitForChild("ErrorPrompt"))
         local prompt = EP.new("Default", { HideErrorCode = true })
-        local Storage2 = Create("ScreenGui", { Parent = CoreGui, ResetOnSpawn = false })
+        local Storage2 = Instance.new("ScreenGui")
+        Storage2.Parent = CoreGui
+        Storage2.ResetOnSpawn = false
         local thread = state and running()
         prompt:setParent(Storage2)
-        prompt:setErrorTitle("Simple Spy V3 Error")
+        prompt:setErrorTitle("Simple Spy Error")
         prompt:updateButtons({{
             Text = "Proceed",
             Callback = function()
@@ -183,43 +167,712 @@ function ErrorPrompt(Message, state)
     end
 end
 
-local Highlight = (isfile and loadfile and isfile("Highlight.lua") and loadfile("Highlight.lua")()) or loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/Highlight.lua"))()
+local G2L = {}
 
-local SimpleSpy3 = Create("ScreenGui", { ResetOnSpawn = false })
-local Storage = Create("Folder", {})
-local Background = Create("Frame", { Parent = SimpleSpy3, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Position = UDim2.new(0, 500, 0, 200), Size = UDim2.new(0, 450, 0, 268) })
-local LeftPanel = Create("Frame", { Parent = Background, BackgroundColor3 = Color3.fromRGB(53, 52, 55), BorderSizePixel = 0, Position = UDim2.new(0, 0, 0, 19), Size = UDim2.new(0, 131, 0, 249) })
-local LogList = Create("ScrollingFrame", { Parent = LeftPanel, Active = true, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, BorderSizePixel = 0, Position = UDim2.new(0, 0, 0, 9), Size = UDim2.new(0, 131, 0, 232), CanvasSize = UDim2.new(0, 0, 0, 0), ScrollBarThickness = 4 })
-local UIListLayout = Create("UIListLayout", { Parent = LogList, HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder })
-local RightPanel = Create("Frame", { Parent = Background, BackgroundColor3 = Color3.fromRGB(37, 36, 38), BorderSizePixel = 0, Position = UDim2.new(0, 131, 0, 19), Size = UDim2.new(0, 319, 0, 249) })
-local CodeBox = Create("Frame", { Parent = RightPanel, BackgroundColor3 = Color3.new(0.0823529, 0.0745098, 0.0784314), BorderSizePixel = 0, Size = UDim2.new(0, 319, 0, 119) })
-local ScrollingFrame = Create("ScrollingFrame", { Parent = RightPanel, Active = true, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Position = UDim2.new(0, 0, 0.5, 0), Size = UDim2.new(1, 0, 0.5, -9), CanvasSize = UDim2.new(0, 0, 0, 0), ScrollBarThickness = 4 })
-local UIGridLayout = Create("UIGridLayout", { Parent = ScrollingFrame, HorizontalAlignment = Enum.HorizontalAlignment.Center, SortOrder = Enum.SortOrder.LayoutOrder, CellPadding = UDim2.new(0, 0, 0, 0), CellSize = UDim2.new(0, 94, 0, 27) })
-local TopBar = Create("Frame", { Parent = Background, BackgroundColor3 = Color3.fromRGB(37, 35, 38), BorderSizePixel = 0, Size = UDim2.new(0, 450, 0, 19) })
-local Simple = Create("TextButton", { Parent = TopBar, BackgroundColor3 = Color3.new(1, 1, 1), AutoButtonColor = false, BackgroundTransparency = 1, Position = UDim2.new(0, 5, 0, 0), Size = UDim2.new(0, 57, 0, 18), Font = Enum.Font.SourceSansBold, Text = "SimpleSpy", TextColor3 = Color3.new(1, 1, 1), TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left })
-local CloseButton = Create("TextButton", { Parent = TopBar, BackgroundColor3 = Color3.new(0.145098, 0.141176, 0.14902), BorderSizePixel = 0, Position = UDim2.new(1, -19, 0, 0), Size = UDim2.new(0, 19, 0, 19), Font = Enum.Font.SourceSans, Text = "", TextColor3 = Color3.new(0, 0, 0), TextSize = 14 })
-local ImageLabel = Create("ImageLabel", { Parent = CloseButton, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Position = UDim2.new(0, 5, 0, 5), Size = UDim2.new(0, 9, 0, 9), Image = "http://www.roblox.com/asset/?id=5597086202" })
-local MaximizeButton = Create("TextButton", { Parent = TopBar, BackgroundColor3 = Color3.new(0.145098, 0.141176, 0.14902), BorderSizePixel = 0, Position = UDim2.new(1, -38, 0, 0), Size = UDim2.new(0, 19, 0, 19), Font = Enum.Font.SourceSans, Text = "", TextColor3 = Color3.new(0, 0, 0), TextSize = 14 })
-local ImageLabel_2 = Create("ImageLabel", { Parent = MaximizeButton, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Position = UDim2.new(0, 5, 0, 5), Size = UDim2.new(0, 9, 0, 9), Image = "http://www.roblox.com/asset/?id=5597108117" })
-local MinimizeButton = Create("TextButton", { Parent = TopBar, BackgroundColor3 = Color3.new(0.145098, 0.141176, 0.14902), BorderSizePixel = 0, Position = UDim2.new(1, -57, 0, 0), Size = UDim2.new(0, 19, 0, 19), Font = Enum.Font.SourceSans, Text = "", TextColor3 = Color3.new(0, 0, 0), TextSize = 14 })
-local ImageLabel_3 = Create("ImageLabel", { Parent = MinimizeButton, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Position = UDim2.new(0, 5, 0, 5), Size = UDim2.new(0, 9, 0, 9), Image = "http://www.roblox.com/asset/?id=5597105827" })
+G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"))
+G2L["1"]["Name"] = "SimpleSpy"
+G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling
+G2L["1"]["ResetOnSpawn"] = false
 
-local ToolTip = Create("Frame", { Parent = SimpleSpy3, BackgroundColor3 = Color3.fromRGB(26, 26, 26), BackgroundTransparency = 0.1, BorderColor3 = Color3.new(1, 1, 1), Size = UDim2.new(0, 200, 0, 50), ZIndex = 3, Visible = false })
-local TextLabel = Create("TextLabel", { Parent = ToolTip, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Position = UDim2.new(0, 2, 0, 2), Size = UDim2.new(0, 196, 0, 46), ZIndex = 3, Font = Enum.Font.SourceSans, Text = "This is some slightly longer text.", TextColor3 = Color3.new(1, 1, 1), TextSize = 14, TextWrapped = true, TextXAlignment = Enum.TextXAlignment.Left, TextYAlignment = Enum.TextYAlignment.Top })
+G2L["2"] = Instance.new("Frame", G2L["1"])
+G2L["2"]["BorderSizePixel"] = 0
+G2L["2"]["BackgroundColor3"] = Color3.fromRGB(101, 101, 101)
+G2L["2"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["2"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["2"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["2"]["Name"] = "Canvas"
+G2L["2"]["BackgroundTransparency"] = 1
 
-local selectedColor = Color3.new(0.321569, 0.333333, 1)
-local deselectedColor = Color3.new(0.8, 0.8, 0.8)
+G2L["3"] = Instance.new("Frame", G2L["2"])
+G2L["3"]["BorderSizePixel"] = 0
+G2L["3"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["3"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["3"]["Size"] = UDim2.new(0.29182, 0, 0.4037, 0)
+G2L["3"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["3"]["Name"] = "Main"
+G2L["3"]["BackgroundTransparency"] = 1
+
+G2L["4"] = Instance.new("ImageLabel", G2L["3"])
+G2L["4"]["BorderSizePixel"] = 0
+G2L["4"]["SliceCenter"] = Rect.new(256, 256, 256, 256)
+G2L["4"]["SliceScale"] = 0.0625
+G2L["4"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["4"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["4"]["ImageColor3"] = Color3.fromRGB(17, 17, 17)
+G2L["4"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["4"]["Image"] = "rbxassetid://80999662900595"
+G2L["4"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["4"]["BackgroundTransparency"] = 1
+G2L["4"]["Name"] = "Background"
+G2L["4"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["5"] = Instance.new("Frame", G2L["4"])
+G2L["5"]["BorderSizePixel"] = 0
+G2L["5"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["5"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["5"]["Size"] = UDim2.new(0.05517, 0, 0.06957, 0)
+G2L["5"]["Position"] = UDim2.new(1, 0, 1, 0)
+G2L["5"]["Name"] = "Resize"
+G2L["5"]["BackgroundTransparency"] = 1
+
+G2L["6"] = Instance.new("ImageButton", G2L["5"])
+G2L["6"]["BorderSizePixel"] = 0
+G2L["6"]["ImageTransparency"] = 0.8
+G2L["6"]["BackgroundTransparency"] = 1
+G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["6"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["6"]["Image"] = "rbxassetid://120997033468887"
+G2L["6"]["Size"] = UDim2.new(2.79682, 0, 3, 0)
+G2L["6"]["Name"] = "Icon"
+G2L["6"]["Position"] = UDim2.new(0.2202, 0, 0.03343, 0)
+
+G2L["7"] = Instance.new("ImageButton", G2L["4"])
+G2L["7"]["SliceScale"] = 0.38672
+G2L["7"]["BorderSizePixel"] = 0
+G2L["7"]["SliceCenter"] = Rect.new(256, 256, 256, 256)
+G2L["7"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["7"]["ImageTransparency"] = 0.8
+G2L["7"]["BackgroundTransparency"] = 1
+G2L["7"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["7"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["7"]["Image"] = "rbxassetid://80999662900595"
+G2L["7"]["Size"] = UDim2.new(0.27586, 0, 0.01237, 0)
+G2L["7"]["Name"] = "Drag"
+G2L["7"]["Position"] = UDim2.new(0.5, 0, 1.015, 0)
+
+G2L["8"] = Instance.new("ImageLabel", G2L["3"])
+G2L["8"]["ZIndex"] = 0
+G2L["8"]["BorderSizePixel"] = 0
+G2L["8"]["SliceCenter"] = Rect.new(99, 99, 99, 99)
+G2L["8"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["8"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["8"]["ImageTransparency"] = 0.6
+G2L["8"]["ImageColor3"] = Color3.fromRGB(0, 0, 0)
+G2L["8"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["8"]["Image"] = "rbxassetid://8992230677"
+G2L["8"]["Size"] = UDim2.new(1.17241, 0, 1.21739, 0)
+G2L["8"]["BackgroundTransparency"] = 1
+G2L["8"]["Name"] = "Blur"
+G2L["8"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["9"] = Instance.new("UICorner", G2L["3"])
+G2L["9"]["CornerRadius"] = UDim.new(0.03478, 0)
+
+G2L["a"] = Instance.new("CanvasGroup", G2L["3"])
+G2L["a"]["BorderSizePixel"] = 0
+G2L["a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["a"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["a"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["a"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["a"]["BackgroundTransparency"] = 1
+
+G2L["b"] = Instance.new("UICorner", G2L["a"])
+G2L["b"]["CornerRadius"] = UDim.new(0.03478, 0)
+
+G2L["c"] = Instance.new("CanvasGroup", G2L["a"])
+G2L["c"]["BorderSizePixel"] = 0
+G2L["c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["c"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["c"]["Size"] = UDim2.new(0.99915, 0, 0.88732, 0)
+G2L["c"]["Position"] = UDim2.new(0.49958, 0, 0.55634, 0)
+G2L["c"]["Name"] = "Content"
+G2L["c"]["LayoutOrder"] = 1
+G2L["c"]["BackgroundTransparency"] = 1
+
+G2L["d"] = Instance.new("CanvasGroup", G2L["c"])
+G2L["d"]["BorderSizePixel"] = 0
+G2L["d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["d"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["d"]["Size"] = UDim2.new(0.35, 0, 1, 0)
+G2L["d"]["Position"] = UDim2.new(0.17599, 0, 0.54891, 0)
+G2L["d"]["Name"] = "Selection"
+G2L["d"]["BackgroundTransparency"] = 1
+
+G2L["e"] = Instance.new("ScrollingFrame", G2L["d"])
+G2L["e"]["Active"] = true
+G2L["e"]["BorderSizePixel"] = 0
+G2L["e"]["CanvasSize"] = UDim2.new(0, 0, 0, 0)
+G2L["e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["e"]["VerticalScrollBarPosition"] = Enum.VerticalScrollBarPosition.Left
+G2L["e"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["e"]["AutomaticCanvasSize"] = Enum.AutomaticSize.Y
+G2L["e"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["e"]["ScrollBarImageColor3"] = Color3.fromRGB(166, 166, 166)
+G2L["e"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["e"]["ScrollBarThickness"] = 0
+G2L["e"]["LayoutOrder"] = 1
+G2L["e"]["BackgroundTransparency"] = 1
+
+G2L["f"] = Instance.new("UIPadding", G2L["e"])
+G2L["f"]["PaddingRight"] = UDim.new(0.02499, 0)
+G2L["f"]["PaddingLeft"] = UDim.new(0.02499, 0)
+
+G2L["10"] = Instance.new("Frame", G2L["e"])
+G2L["10"]["BorderSizePixel"] = 0
+G2L["10"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["10"]["AnchorPoint"] = Vector2.new(0.5, 0)
+G2L["10"]["AutomaticSize"] = Enum.AutomaticSize.Y
+G2L["10"]["Size"] = UDim2.new(1, 0, 0, 0)
+G2L["10"]["Position"] = UDim2.new(0.5, 0, 0, 0)
+G2L["10"]["Name"] = "Content"
+G2L["10"]["BackgroundTransparency"] = 1
+
+G2L["11"] = Instance.new("UIListLayout", G2L["10"])
+G2L["11"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+
+G2L["12"] = Instance.new("UIPadding", G2L["10"])
+G2L["12"]["PaddingBottom"] = UDim.new(0, 7)
+
+G2L["13"] = Instance.new("ImageButton", G2L["10"])
+G2L["13"]["SliceScale"] = 0.03516
+G2L["13"]["BorderSizePixel"] = 0
+G2L["13"]["SliceCenter"] = Rect.new(256, 256, 256, 256)
+G2L["13"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["13"]["ImageTransparency"] = 1
+G2L["13"]["BackgroundTransparency"] = 1
+G2L["13"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["13"]["Image"] = "rbxassetid://80999662900595"
+G2L["13"]["AutomaticSize"] = Enum.AutomaticSize.Y
+G2L["13"]["Size"] = UDim2.new(1, -7, 0, 0)
+G2L["13"]["Name"] = "Template"
+
+G2L["14"] = Instance.new("ImageLabel", G2L["13"])
+G2L["14"]["BorderSizePixel"] = 0
+G2L["14"]["SliceCenter"] = Rect.new(512, 512, 512, 512)
+G2L["14"]["SliceScale"] = 0.01758
+G2L["14"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["14"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["14"]["ImageTransparency"] = 0.75
+G2L["14"]["Image"] = "rbxassetid://95071123641270"
+G2L["14"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["14"]["Visible"] = false
+G2L["14"]["BackgroundTransparency"] = 1
+G2L["14"]["Name"] = "Outline"
+
+G2L["15"] = Instance.new("CanvasGroup", G2L["13"])
+G2L["15"]["BorderSizePixel"] = 0
+G2L["15"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["15"]["AutomaticSize"] = Enum.AutomaticSize.Y
+G2L["15"]["Size"] = UDim2.new(1, 0, 0, 0)
+G2L["15"]["Name"] = "Content"
+G2L["15"]["BackgroundTransparency"] = 1
+
+G2L["16"] = Instance.new("UIListLayout", G2L["15"])
+G2L["16"]["Padding"] = UDim.new(0, 9)
+G2L["16"]["VerticalAlignment"] = Enum.VerticalAlignment.Center
+G2L["16"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+G2L["16"]["FillDirection"] = Enum.FillDirection.Horizontal
+
+G2L["17"] = Instance.new("UIPadding", G2L["15"])
+G2L["17"]["PaddingTop"] = UDim.new(0, 5)
+G2L["17"]["PaddingRight"] = UDim.new(0, 9)
+G2L["17"]["PaddingLeft"] = UDim.new(0, 9)
+G2L["17"]["PaddingBottom"] = UDim.new(0, 5)
+
+G2L["18"] = Instance.new("ImageLabel", G2L["15"])
+G2L["18"]["BorderSizePixel"] = 0
+G2L["18"]["SliceCenter"] = Rect.new(256, 256, 256, 256)
+G2L["18"]["SliceScale"] = 0.0332
+G2L["18"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["18"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["18"]["ImageColor3"] = Color3.fromRGB(78, 33, 255)
+G2L["18"]["Image"] = "rbxassetid://80999662900595"
+G2L["18"]["Size"] = UDim2.new(0, 26, 0, 26)
+G2L["18"]["BackgroundTransparency"] = 1
+G2L["18"]["Name"] = "Icon"
+
+G2L["19"] = Instance.new("ImageLabel", G2L["18"])
+G2L["19"]["BorderSizePixel"] = 0
+G2L["19"]["SliceCenter"] = Rect.new(512, 512, 512, 512)
+G2L["19"]["SliceScale"] = 0.0166
+G2L["19"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["19"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["19"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["19"]["Image"] = "rbxassetid://95071123641270"
+G2L["19"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["19"]["BackgroundTransparency"] = 1
+G2L["19"]["Name"] = "Outline"
+G2L["19"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["1a"] = Instance.new("Frame", G2L["18"])
+G2L["1a"]["BorderSizePixel"] = 0
+G2L["1a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["1a"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["1a"]["Size"] = UDim2.new(0.61538, 0, 0.61538, 0)
+G2L["1a"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["1a"]["Name"] = "Content"
+G2L["1a"]["BackgroundTransparency"] = 1
+
+G2L["1b"] = Instance.new("ImageLabel", G2L["1a"])
+G2L["1b"]["BorderSizePixel"] = 0
+G2L["1b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["1b"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["1b"]["Image"] = "rbxassetid://117906088481880"
+G2L["1b"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["1b"]["BackgroundTransparency"] = 1
+G2L["1b"]["Name"] = "Icon"
+G2L["1b"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["1c"] = Instance.new("TextLabel", G2L["15"])
+G2L["1c"]["BorderSizePixel"] = 0
+G2L["1c"]["TextSize"] = 14
+G2L["1c"]["TextXAlignment"] = Enum.TextXAlignment.Left
+G2L["1c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["1c"]["FontFace"] = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
+G2L["1c"]["TextColor3"] = Color3.fromRGB(123, 123, 123)
+G2L["1c"]["BackgroundTransparency"] = 1
+G2L["1c"]["Size"] = UDim2.new(1, -35, 0, 0)
+G2L["1c"]["Text"] = "Example"
+G2L["1c"]["LayoutOrder"] = 1
+G2L["1c"]["AutomaticSize"] = Enum.AutomaticSize.Y
+G2L["1c"]["Name"] = "Title"
+
+G2L["1d"] = Instance.new("UIPadding", G2L["1c"])
+G2L["1d"]["PaddingTop"] = UDim.new(0, 5)
+G2L["1d"]["PaddingBottom"] = UDim.new(0, 5)
+
+G2L["1e"] = Instance.new("UIListLayout", G2L["e"])
+G2L["1e"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center
+G2L["1e"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+
+G2L["1f"] = Instance.new("UIListLayout", G2L["d"])
+G2L["1f"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center
+G2L["1f"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+
+G2L["20"] = Instance.new("CanvasGroup", G2L["c"])
+G2L["20"]["BorderSizePixel"] = 0
+G2L["20"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["20"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["20"]["Size"] = UDim2.new(0.65, 0, 1, 0)
+G2L["20"]["Position"] = UDim2.new(0.67599, 0, 0.54891, 0)
+G2L["20"]["Name"] = "Tab"
+G2L["20"]["BackgroundTransparency"] = 1
+
+G2L["21"] = Instance.new("ImageLabel", G2L["20"])
+G2L["21"]["ZIndex"] = 3
+G2L["21"]["BorderSizePixel"] = 0
+G2L["21"]["SliceCenter"] = Rect.new(256, 256, 256, 256)
+G2L["21"]["SliceScale"] = 0.03516
+G2L["21"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["21"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["21"]["ImageTransparency"] = 0.95
+G2L["21"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["21"]["Image"] = "rbxassetid://80999662900595"
+G2L["21"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["21"]["BackgroundTransparency"] = 1
+G2L["21"]["Name"] = "Background"
+G2L["21"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["22"] = Instance.new("UIPadding", G2L["20"])
+G2L["22"]["PaddingRight"] = UDim.new(0, 7)
+G2L["22"]["PaddingLeft"] = UDim.new(0, 7)
+G2L["22"]["PaddingBottom"] = UDim.new(0, 7)
+
+G2L["23"] = Instance.new("Frame", G2L["20"])
+G2L["23"]["BorderSizePixel"] = 0
+G2L["23"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["23"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["23"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["23"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["23"]["Name"] = "Content"
+G2L["23"]["BackgroundTransparency"] = 1
+
+G2L["24"] = Instance.new("Frame", G2L["23"])
+G2L["24"]["BorderSizePixel"] = 0
+G2L["24"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["24"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["24"]["Size"] = UDim2.new(1, 0, 0.6, 0)
+G2L["24"]["Position"] = UDim2.new(0.5, 0, 0.3, 0)
+G2L["24"]["Name"] = "Code"
+G2L["24"]["BackgroundTransparency"] = 1
+
+G2L["25"] = Instance.new("ScrollingFrame", G2L["24"])
+G2L["25"]["Active"] = true
+G2L["25"]["BorderSizePixel"] = 0
+G2L["25"]["CanvasSize"] = UDim2.new(0, 0, 0, 0)
+G2L["25"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["25"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["25"]["AutomaticCanvasSize"] = Enum.AutomaticSize.XY
+G2L["25"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["25"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["25"]["ScrollBarThickness"] = 4
+G2L["25"]["BackgroundTransparency"] = 1
+
+G2L["26"] = Instance.new("Frame", G2L["25"])
+G2L["26"]["BorderSizePixel"] = 0
+G2L["26"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["26"]["AutomaticSize"] = Enum.AutomaticSize.Y
+G2L["26"]["Size"] = UDim2.new(0.10256, 0, 1, 0)
+G2L["26"]["Name"] = "list"
+G2L["26"]["BackgroundTransparency"] = 1
+
+G2L["27"] = Instance.new("TextLabel", G2L["26"])
+G2L["27"]["BorderSizePixel"] = 0
+G2L["27"]["TextSize"] = 14
+G2L["27"]["TextXAlignment"] = Enum.TextXAlignment.Left
+G2L["27"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["27"]["FontFace"] = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
+G2L["27"]["TextColor3"] = Color3.fromRGB(123, 123, 123)
+G2L["27"]["BackgroundTransparency"] = 1
+G2L["27"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["27"]["Text"] = "1"
+G2L["27"]["LayoutOrder"] = 1
+G2L["27"]["AutomaticSize"] = Enum.AutomaticSize.XY
+G2L["27"]["Name"] = "Number"
+G2L["27"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["27"]["Visible"] = false
+
+G2L["28"] = Instance.new("UIPadding", G2L["27"])
+G2L["28"]["PaddingTop"] = UDim.new(0, 10)
+
+G2L["29"] = Instance.new("UIListLayout", G2L["26"])
+G2L["29"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center
+G2L["29"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+
+G2L["2a"] = Instance.new("UIListLayout", G2L["25"])
+G2L["2a"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+G2L["2a"]["FillDirection"] = Enum.FillDirection.Horizontal
+
+G2L["2b"] = Instance.new("Frame", G2L["25"])
+G2L["2b"]["BorderSizePixel"] = 0
+G2L["2b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["2b"]["AutomaticSize"] = Enum.AutomaticSize.XY
+G2L["2b"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["2b"]["Name"] = "Code"
+G2L["2b"]["BackgroundTransparency"] = 1
+
+G2L["2c"] = Instance.new("TextLabel", G2L["2b"])
+G2L["2c"]["BorderSizePixel"] = 0
+G2L["2c"]["TextSize"] = 14
+G2L["2c"]["TextXAlignment"] = Enum.TextXAlignment.Left
+G2L["2c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["2c"]["FontFace"] = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
+G2L["2c"]["TextColor3"] = Color3.fromRGB(123, 123, 123)
+G2L["2c"]["BackgroundTransparency"] = 1
+G2L["2c"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["2c"]["Text"] = ""
+G2L["2c"]["LayoutOrder"] = 1
+G2L["2c"]["AutomaticSize"] = Enum.AutomaticSize.XY
+G2L["2c"]["Name"] = "Text"
+G2L["2c"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["2d"] = Instance.new("UIPadding", G2L["2c"])
+G2L["2d"]["PaddingTop"] = UDim.new(0, 10)
+
+G2L["2e"] = Instance.new("UIListLayout", G2L["2b"])
+G2L["2e"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+
+G2L["2f"] = Instance.new("Frame", G2L["23"])
+G2L["2f"]["BorderSizePixel"] = 0
+G2L["2f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["2f"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["2f"]["Size"] = UDim2.new(1, 0, 0.4, 0)
+G2L["2f"]["Position"] = UDim2.new(0.5, 0, 0.8, 0)
+G2L["2f"]["Name"] = "Buttons"
+G2L["2f"]["LayoutOrder"] = 1
+G2L["2f"]["BackgroundTransparency"] = 1
+
+G2L["30"] = Instance.new("ScrollingFrame", G2L["2f"])
+G2L["30"]["Active"] = true
+G2L["30"]["BorderSizePixel"] = 0
+G2L["30"]["CanvasSize"] = UDim2.new(0, 0, 0, 0)
+G2L["30"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["30"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["30"]["AutomaticCanvasSize"] = Enum.AutomaticSize.Y
+G2L["30"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["30"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["30"]["ScrollBarThickness"] = 4
+G2L["30"]["BackgroundTransparency"] = 1
+
+G2L["31"] = Instance.new("UIGridLayout", G2L["30"])
+G2L["31"]["CellSize"] = UDim2.new(0, 72, 0, 30)
+G2L["31"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+
+G2L["32"] = Instance.new("UIPadding", G2L["30"])
+G2L["32"]["PaddingTop"] = UDim.new(0, 5)
+G2L["32"]["PaddingLeft"] = UDim.new(0, 5)
+
+G2L["33"] = Instance.new("ImageLabel", G2L["30"])
+G2L["33"]["BorderSizePixel"] = 0
+G2L["33"]["SliceCenter"] = Rect.new(256, 256, 256, 256)
+G2L["33"]["SliceScale"] = 0.02
+G2L["33"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["33"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["33"]["ImageTransparency"] = 0.9
+G2L["33"]["Image"] = "rbxassetid://80999662900595"
+G2L["33"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["33"]["BackgroundTransparency"] = 1
+G2L["33"]["Name"] = "Template"
+G2L["33"]["Visible"] = false
+
+G2L["34"] = Instance.new("ImageLabel", G2L["33"])
+G2L["34"]["BorderSizePixel"] = 0
+G2L["34"]["SliceCenter"] = Rect.new(512, 512, 512, 512)
+G2L["34"]["SliceScale"] = 0.01
+G2L["34"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["34"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["34"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["34"]["Image"] = "rbxassetid://95071123641270"
+G2L["34"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["34"]["BackgroundTransparency"] = 1
+G2L["34"]["Name"] = "Outline"
+G2L["34"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["35"] = Instance.new("CanvasGroup", G2L["33"])
+G2L["35"]["BorderSizePixel"] = 0
+G2L["35"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["35"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["35"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["35"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["35"]["BackgroundTransparency"] = 1
+
+G2L["36"] = Instance.new("TextLabel", G2L["35"])
+G2L["36"]["BorderSizePixel"] = 0
+G2L["36"]["TextSize"] = 12
+G2L["36"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["36"]["FontFace"] = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
+G2L["36"]["TextColor3"] = Color3.fromRGB(123, 123, 123)
+G2L["36"]["BackgroundTransparency"] = 1
+G2L["36"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["36"]["Size"] = UDim2.new(1, 0, 0, 0)
+G2L["36"]["Text"] = "Button"
+G2L["36"]["LayoutOrder"] = 1
+G2L["36"]["AutomaticSize"] = Enum.AutomaticSize.Y
+G2L["36"]["Name"] = "Title"
+G2L["36"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["37"] = Instance.new("UIListLayout", G2L["23"])
+G2L["37"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+
+G2L["38"] = Instance.new("UIListLayout", G2L["c"])
+G2L["38"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+G2L["38"]["FillDirection"] = Enum.FillDirection.Horizontal
+
+G2L["39"] = Instance.new("UIListLayout", G2L["a"])
+G2L["39"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+
+G2L["3a"] = Instance.new("CanvasGroup", G2L["a"])
+G2L["3a"]["BorderSizePixel"] = 0
+G2L["3a"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["3a"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["3a"]["Size"] = UDim2.new(1, 0, 0.11468, 0)
+G2L["3a"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["3a"]["Name"] = "Topbar"
+G2L["3a"]["BackgroundTransparency"] = 1
+
+G2L["3b"] = Instance.new("UIListLayout", G2L["3a"])
+G2L["3b"]["Padding"] = UDim.new(0, 8)
+G2L["3b"]["VerticalAlignment"] = Enum.VerticalAlignment.Center
+G2L["3b"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+G2L["3b"]["FillDirection"] = Enum.FillDirection.Horizontal
+
+G2L["3c"] = Instance.new("UIPadding", G2L["3a"])
+G2L["3c"]["PaddingTop"] = UDim.new(0, 0)
+G2L["3c"]["PaddingRight"] = UDim.new(0, 8)
+G2L["3c"]["PaddingLeft"] = UDim.new(0, 8)
+G2L["3c"]["PaddingBottom"] = UDim.new(0, 0)
+
+G2L["3d"] = Instance.new("Frame", G2L["3a"])
+G2L["3d"]["BorderSizePixel"] = 0
+G2L["3d"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["3d"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["3d"]["AutomaticSize"] = Enum.AutomaticSize.XY
+G2L["3d"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["3d"]["Name"] = "Center"
+G2L["3d"]["LayoutOrder"] = 1
+G2L["3d"]["BackgroundTransparency"] = 1
+
+G2L["3e"] = Instance.new("UIPadding", G2L["3d"])
+G2L["3e"]["PaddingLeft"] = UDim.new(0, 0)
+
+G2L["3f"] = Instance.new("UIListLayout", G2L["3d"])
+G2L["3f"]["Padding"] = UDim.new(0, 4)
+G2L["3f"]["VerticalAlignment"] = Enum.VerticalAlignment.Center
+G2L["3f"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+G2L["3f"]["FillDirection"] = Enum.FillDirection.Horizontal
+
+G2L["40"] = Instance.new("Frame", G2L["3d"])
+G2L["40"]["BorderSizePixel"] = 0
+G2L["40"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["40"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["40"]["AutomaticSize"] = Enum.AutomaticSize.XY
+G2L["40"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["40"]["Name"] = "Title"
+G2L["40"]["LayoutOrder"] = 1
+G2L["40"]["BackgroundTransparency"] = 1
+
+G2L["41"] = Instance.new("TextLabel", G2L["40"])
+G2L["41"]["BorderSizePixel"] = 0
+G2L["41"]["TextSize"] = 13
+G2L["41"]["TextXAlignment"] = Enum.TextXAlignment.Left
+G2L["41"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["41"]["FontFace"] = Font.new("rbxassetid://12187365364", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
+G2L["41"]["TextColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["41"]["BackgroundTransparency"] = 1
+G2L["41"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["41"]["BorderColor3"] = Color3.fromRGB(0, 0, 0)
+G2L["41"]["Text"] = "Jaownai | Simple Spy Custom"
+G2L["41"]["AutomaticSize"] = Enum.AutomaticSize.XY
+G2L["41"]["Name"] = "Title"
+G2L["41"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["42"] = Instance.new("UIListLayout", G2L["40"])
+G2L["42"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+G2L["42"]["FillDirection"] = Enum.FillDirection.Horizontal
+G2L["42"]["VerticalAlignment"] = Enum.VerticalAlignment.Center
+G2L["42"]["Padding"] = UDim.new(0, 6)
+
+G2L["44"] = Instance.new("Frame", G2L["3a"])
+G2L["44"]["BorderSizePixel"] = 0
+G2L["44"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["44"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["44"]["AutomaticSize"] = Enum.AutomaticSize.XY
+G2L["44"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["44"]["Name"] = "Left"
+G2L["44"]["BackgroundTransparency"] = 1
+
+G2L["45"] = Instance.new("UIListLayout", G2L["44"])
+G2L["45"]["SortOrder"] = Enum.SortOrder.LayoutOrder
+G2L["45"]["FillDirection"] = Enum.FillDirection.Horizontal
+
+G2L["46"] = Instance.new("Frame", G2L["44"])
+G2L["46"]["BorderSizePixel"] = 0
+G2L["46"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["46"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["46"]["Size"] = UDim2.new(0, 24, 0, 24)
+G2L["46"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["46"]["Name"] = "Close"
+G2L["46"]["BackgroundTransparency"] = 1
+
+G2L["47"] = Instance.new("ImageButton", G2L["46"])
+G2L["47"]["BorderSizePixel"] = 0
+G2L["47"]["BackgroundTransparency"] = 1
+G2L["47"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["47"]["ImageColor3"] = Color3.fromRGB(245, 106, 96)
+G2L["47"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["47"]["Image"] = "rbxassetid://80999662900595"
+G2L["47"]["Size"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["47"]["Name"] = "Icon"
+G2L["47"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["4b"] = Instance.new("Frame", G2L["44"])
+G2L["4b"]["BorderSizePixel"] = 0
+G2L["4b"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["4b"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["4b"]["Size"] = UDim2.new(0, 24, 0, 24)
+G2L["4b"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["4b"]["Name"] = "Hide"
+G2L["4b"]["LayoutOrder"] = 1
+G2L["4b"]["BackgroundTransparency"] = 1
+
+G2L["4c"] = Instance.new("ImageButton", G2L["4b"])
+G2L["4c"]["BorderSizePixel"] = 0
+G2L["4c"]["BackgroundTransparency"] = 1
+G2L["4c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["4c"]["ImageColor3"] = Color3.fromRGB(245, 202, 73)
+G2L["4c"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["4c"]["Image"] = "rbxassetid://80999662900595"
+G2L["4c"]["Size"] = UDim2.new(0.58333, 0, 0.58333, 0)
+G2L["4c"]["Name"] = "Icon"
+G2L["4c"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["50"] = Instance.new("Frame", G2L["44"])
+G2L["50"]["BorderSizePixel"] = 0
+G2L["50"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["50"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["50"]["Size"] = UDim2.new(0, 24, 0, 24)
+G2L["50"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["50"]["Name"] = "Minimize"
+G2L["50"]["LayoutOrder"] = 2
+G2L["50"]["BackgroundTransparency"] = 1
+
+G2L["51"] = Instance.new("ImageButton", G2L["50"])
+G2L["51"]["BorderSizePixel"] = 0
+G2L["51"]["BackgroundTransparency"] = 1
+G2L["51"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["51"]["ImageColor3"] = Color3.fromRGB(97, 200, 99)
+G2L["51"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["51"]["Image"] = "rbxassetid://80999662900595"
+G2L["51"]["Size"] = UDim2.new(0.5, 0, 0.5, 0)
+G2L["51"]["Name"] = "Icon"
+G2L["51"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+G2L["55"] = Instance.new("ImageLabel", G2L["3"])
+G2L["55"]["ZIndex"] = 999
+G2L["55"]["BorderSizePixel"] = 0
+G2L["55"]["SliceCenter"] = Rect.new(256, 256, 256, 256)
+G2L["55"]["SliceScale"] = 0.0625
+G2L["55"]["ScaleType"] = Enum.ScaleType.Slice
+G2L["55"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255)
+G2L["55"]["ImageTransparency"] = 0.65
+G2L["55"]["ImageColor3"] = Color3.fromRGB(0, 0, 0)
+G2L["55"]["AnchorPoint"] = Vector2.new(0.5, 0.5)
+G2L["55"]["Image"] = "rbxassetid://80999662900595"
+G2L["55"]["Size"] = UDim2.new(1, 0, 1, 0)
+G2L["55"]["Visible"] = false
+G2L["55"]["BackgroundTransparency"] = 1
+G2L["55"]["Name"] = "Active"
+G2L["55"]["Position"] = UDim2.new(0.5, 0, 0.5, 0)
+
+local Storage = Instance.new("Folder")
+
+local SimpleSpy3    = G2L["1"]
+local Background    = G2L["3"]
+local TopBar        = G2L["3a"]
+local LeftPanel     = G2L["d"]
+local LogList       = G2L["10"]
+local UIListLayout  = G2L["11"]
+local RightPanel    = G2L["20"]
+local CodeBox       = G2L["24"]
+local ScrollingFrame = G2L["30"]
+local UIGridLayout  = G2L["31"]
+local CloseButton   = G2L["47"]
+local MaximizeButton = G2L["4c"]
+local MinimizeButton = G2L["51"]
+local RemoteTemplate = G2L["13"]
+local ButtonTemplate = G2L["33"]
+
+local Simple = Instance.new("TextButton")
+Simple.Size = UDim2.new(1, 0, 1, 0)
+Simple.BackgroundTransparency = 1
+Simple.Text = ""
+Simple.ZIndex = 10
+Simple.AutoButtonColor = false
+Simple.Parent = G2L["40"]
+
+local ToolTip = Instance.new("Frame")
+ToolTip.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+ToolTip.BackgroundTransparency = 0.1
+ToolTip.BorderColor3 = Color3.new(1, 1, 1)
+ToolTip.Size = UDim2.new(0, 200, 0, 50)
+ToolTip.ZIndex = 100
+ToolTip.Visible = false
+ToolTip.Parent = SimpleSpy3
+
+local TextLabel = Instance.new("TextLabel")
+TextLabel.BackgroundTransparency = 1
+TextLabel.Position = UDim2.new(0, 2, 0, 2)
+TextLabel.Size = UDim2.new(0, 196, 0, 46)
+TextLabel.ZIndex = 100
+TextLabel.Font = Enum.Font.SourceSans
+TextLabel.TextColor3 = Color3.new(1, 1, 1)
+TextLabel.TextSize = 14
+TextLabel.TextWrapped = true
+TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel.TextYAlignment = Enum.TextYAlignment.Top
+TextLabel.Parent = ToolTip
+
+RemoteTemplate.Visible = false
+ButtonTemplate.Visible = false
+
 local layoutOrderNum = 999999999
-local mainClosing = false
 local closed = false
-local sideClosing = false
 local sideClosed = false
 local maximized = false
 local logs = {}
 local selected = nil
 local blacklist = {}
 local blocklist = {}
-local getNil = false
 local connectedRemotes = {}
 local toggle = false
 local prevTables = {}
@@ -231,15 +884,10 @@ local schedulerconnect
 local SimpleSpy = {}
 local topstr = ""
 local bottomstr = ""
-local remotesFadeIn
-local rightFadeIn
 local codebox
-local p
 local getnilrequired = false
-
 local history = {}
 local excluding = {}
-
 local connections = {}
 local DecompiledScripts = {}
 local generation = {}
@@ -248,8 +896,6 @@ local originalnamecall
 
 local remoteEvent = Instance.new("RemoteEvent", Storage)
 local remoteFunction = Instance.new("RemoteFunction", Storage)
-local NamecallHandler = Instance.new("BindableEvent", Storage)
-local IndexHandler = Instance.new("BindableEvent", Storage)
 local GetDebugIdHandler = Instance.new("BindableFunction", Storage)
 
 local originalEvent = remoteEvent.FireServer
@@ -267,9 +913,7 @@ end
 local synv3 = false
 if syn and identifyexecutor then
     local _, version = identifyexecutor()
-    if version and version:sub(1, 2) == "v3" then
-        synv3 = true
-    end
+    if version and version:sub(1, 2) == "v3" then synv3 = true end
 end
 
 xpcall(function()
@@ -328,31 +972,32 @@ end
 
 function onToggleButtonHover()
     if not toggle then
-        TweenService:Create(Simple, TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(252, 51, 51) }):Play()
+        TweenService:Create(G2L["41"], TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(252, 51, 51) }):Play()
     else
-        TweenService:Create(Simple, TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(68, 206, 91) }):Play()
+        TweenService:Create(G2L["41"], TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(68, 206, 91) }):Play()
     end
 end
 
 function onToggleButtonUnhover()
-    TweenService:Create(Simple, TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(255, 255, 255) }):Play()
-end
-
-function onXButtonHover()
-    TweenService:Create(CloseButton, TweenInfo.new(0.2), { BackgroundColor3 = Color3.fromRGB(255, 60, 60) }):Play()
-end
-
-function onXButtonUnhover()
-    TweenService:Create(CloseButton, TweenInfo.new(0.2), { BackgroundColor3 = Color3.fromRGB(37, 36, 38) }):Play()
+    TweenService:Create(G2L["41"], TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(255, 255, 255) }):Play()
 end
 
 function onToggleButtonClick()
     if toggle then
-        TweenService:Create(Simple, TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(252, 51, 51) }):Play()
+        TweenService:Create(G2L["41"], TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(252, 51, 51) }):Play()
     else
-        TweenService:Create(Simple, TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(68, 206, 91) }):Play()
+        TweenService:Create(G2L["41"], TweenInfo.new(0.5), { TextColor3 = Color3.fromRGB(68, 206, 91) }):Play()
     end
     toggleSpyMethod()
+end
+
+function bringBackOnResize()
+    local currentX = Background.AbsolutePosition.X
+    local currentY = Background.AbsolutePosition.Y
+    local viewportSize = workspace.CurrentCamera.ViewportSize
+    currentX = math.clamp(currentX, 0, viewportSize.X - Background.AbsoluteSize.X)
+    currentY = math.clamp(currentY, 0, viewportSize.Y - Background.AbsoluteSize.Y)
+    TweenService:Create(Background, TweenInfo.new(0.1), { Position = UDim2.new(0, currentX, 0, currentY) }):Play()
 end
 
 function connectResize()
@@ -366,260 +1011,78 @@ function connectResize()
     end)
 end
 
-function bringBackOnResize()
-    validateSize()
-    if sideClosed then minimizeSize() else maximizeSize() end
-    local currentX = Background.AbsolutePosition.X
-    local currentY = Background.AbsolutePosition.Y
-    local viewportSize = workspace.CurrentCamera.ViewportSize
-    if currentX < 0 then
-        currentX = 0
-    elseif currentX > viewportSize.X - (sideClosed and 131 or Background.AbsoluteSize.X) then
-        currentX = viewportSize.X - (sideClosed and 131 or Background.AbsoluteSize.X)
-    end
-    if currentY < 0 then
-        currentY = 0
-    elseif currentY > viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - 36 then
-        currentY = viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - 36
-    end
-    TweenService:Create(Background, TweenInfo.new(0.1), { Position = UDim2.new(0, currentX, 0, currentY) }):Play()
-end
+local dragging = false
+local dragOffset = Vector2.zero
+local resizing = false
+local resizeStart = Vector2.zero
+local resizeStartSz = Vector2.zero
 
-function onBarInput(input)
-    if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
-    local lastPos = UserInputService:GetMouseLocation()
-    local offset = Background.AbsolutePosition - lastPos
-    local currentPos = offset + lastPos
-    if connections["drag"] then return end
-    connections["drag"] = RunService.RenderStepped:Connect(function()
-        local newPos = UserInputService:GetMouseLocation()
-        if newPos == lastPos then return end
+G2L["7"].MouseButton1Down:Connect(function()
+    local abs = Background.AbsolutePosition
+    Background.AnchorPoint = Vector2.zero
+    Background.Position = UDim2.fromOffset(abs.X, abs.Y)
+    dragging = true
+    dragOffset = abs - UserInputService:GetMouseLocation()
+end)
+
+G2L["3a"].InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local abs = Background.AbsolutePosition
+        Background.AnchorPoint = Vector2.zero
+        Background.Position = UDim2.fromOffset(abs.X, abs.Y)
+        dragging = true
+        dragOffset = abs - UserInputService:GetMouseLocation()
+    end
+end)
+
+G2L["6"].MouseButton1Down:Connect(function()
+    local abs = Background.AbsolutePosition
+    Background.AnchorPoint = Vector2.zero
+    Background.Position = UDim2.fromOffset(abs.X, abs.Y)
+    resizing = true
+    resizeStart = UserInputService:GetMouseLocation()
+    resizeStartSz = Background.AbsoluteSize
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input.UserInputType ~= Enum.UserInputType.MouseMovement then return end
+    if dragging then
+        local mp = UserInputService:GetMouseLocation()
         local vp = workspace.CurrentCamera.ViewportSize
-        local x = math.clamp((offset + newPos).X, 0, vp.X - (sideClosed and 131 or TopBar.AbsoluteSize.X))
-        local y = math.clamp((offset + newPos).Y, 0, vp.Y - (closed and 19 or Background.AbsoluteSize.Y) - 36)
-        currentPos = Vector2.new(x, y)
-        lastPos = newPos
-        TweenService:Create(Background, TweenInfo.new(0.1), { Position = UDim2.new(0, x, 0, y) }):Play()
-    end)
-    local endConn
-    endConn = UserInputService.InputEnded:Connect(function(inputE)
-        if input == inputE then
-            if connections["drag"] then
-                connections["drag"]:Disconnect()
-                connections["drag"] = nil
-            end
-            endConn:Disconnect()
-        end
-    end)
-end
+        local x = math.clamp(mp.X + dragOffset.X, 0, vp.X - Background.AbsoluteSize.X)
+        local y = math.clamp(mp.Y + dragOffset.Y, 0, vp.Y - Background.AbsoluteSize.Y)
+        Background.Position = UDim2.fromOffset(x, y)
+    elseif resizing then
+        local delta = UserInputService:GetMouseLocation() - resizeStart
+        local newW = math.max(resizeStartSz.X + delta.X, 420)
+        local newH = math.max(resizeStartSz.Y + delta.Y, 260)
+        Background.Size = UDim2.fromOffset(newW, newH)
+    end
+end)
 
-function fadeOut(elements)
-    local data = {}
-    for _, v in next, elements do
-        if typeof(v) == "Instance" and v:IsA("GuiObject") and v.Visible then
-            spawn(function()
-                data[v] = { BackgroundTransparency = v.BackgroundTransparency }
-                TweenService:Create(v, TweenInfo.new(0.5), { BackgroundTransparency = 1 }):Play()
-                if v:IsA("TextBox") or v:IsA("TextButton") or v:IsA("TextLabel") then
-                    data[v].TextTransparency = v.TextTransparency
-                    TweenService:Create(v, TweenInfo.new(0.5), { TextTransparency = 1 }):Play()
-                elseif v:IsA("ImageButton") or v:IsA("ImageLabel") then
-                    data[v].ImageTransparency = v.ImageTransparency
-                    TweenService:Create(v, TweenInfo.new(0.5), { ImageTransparency = 1 }):Play()
-                end
-                delay(0.5, function()
-                    v.Visible = false
-                    for i, x in next, data[v] do v[i] = x end
-                    data[v] = true
-                end)
-            end)
-        end
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+        resizing = false
     end
-    return function()
-        for i, _ in next, data do
-            spawn(function()
-                local props = { BackgroundTransparency = i.BackgroundTransparency }
-                i.BackgroundTransparency = 1
-                TweenService:Create(i, TweenInfo.new(0.5), { BackgroundTransparency = props.BackgroundTransparency }):Play()
-                if i:IsA("TextBox") or i:IsA("TextButton") or i:IsA("TextLabel") then
-                    props.TextTransparency = i.TextTransparency
-                    i.TextTransparency = 1
-                    TweenService:Create(i, TweenInfo.new(0.5), { TextTransparency = props.TextTransparency }):Play()
-                elseif i:IsA("ImageButton") or i:IsA("ImageLabel") then
-                    props.ImageTransparency = i.ImageTransparency
-                    i.ImageTransparency = 1
-                    TweenService:Create(i, TweenInfo.new(0.5), { ImageTransparency = props.ImageTransparency }):Play()
-                end
-                i.Visible = true
-            end)
-        end
-    end
+end)
+
+function toggleSideTray(override)
+    if maximized then return end
+    sideClosed = not sideClosed
+    TweenService:Create(RightPanel, TweenInfo.new(0.3), {
+        GroupTransparency = sideClosed and 1 or 0
+    }):Play()
+    RightPanel.Interactable = not sideClosed
 end
 
 function toggleMinimize(override)
-    if mainClosing and not override or maximized then return end
-    mainClosing = true
+    if maximized then return end
     closed = not closed
-    if closed then
-        if not sideClosed then toggleSideTray(true) end
-        LeftPanel.Visible = true
-        remotesFadeIn = fadeOut(LeftPanel:GetDescendants())
-        TweenService:Create(LeftPanel, TweenInfo.new(0.5), { Size = UDim2.new(0, 131, 0, 0) }):Play()
-        wait(0.5)
-    else
-        TweenService:Create(LeftPanel, TweenInfo.new(0.5), { Size = UDim2.new(0, 131, 0, 249) }):Play()
-        wait(0.5)
-        if remotesFadeIn then remotesFadeIn(); remotesFadeIn = nil end
-        bringBackOnResize()
-    end
-    mainClosing = false
-end
-
-function toggleSideTray(override)
-    if sideClosing and not override or maximized then return end
-    sideClosing = true
-    sideClosed = not sideClosed
-    if sideClosed then
-        rightFadeIn = fadeOut(RightPanel:GetDescendants())
-        wait(0.5)
-        minimizeSize(0.5)
-        wait(0.5)
-        RightPanel.Visible = false
-    else
-        if closed then toggleMinimize(true) end
-        RightPanel.Visible = true
-        maximizeSize(0.5)
-        wait(0.5)
-        if rightFadeIn then rightFadeIn() end
-        bringBackOnResize()
-    end
-    sideClosing = false
-end
-
-function toggleMaximize()
-    if not sideClosed and not maximized then
-        maximized = true
-        local disable = Instance.new("TextButton")
-        local prevSize = UDim2.new(0, CodeBox.AbsoluteSize.X, 0, CodeBox.AbsoluteSize.Y)
-        local prevPos = UDim2.new(0, CodeBox.AbsolutePosition.X, 0, CodeBox.AbsolutePosition.Y)
-        disable.Size = UDim2.new(1, 0, 1, 0)
-        disable.BackgroundColor3 = Color3.new()
-        disable.BorderSizePixel = 0
-        disable.Text = ""
-        disable.ZIndex = 3
-        disable.BackgroundTransparency = 1
-        disable.AutoButtonColor = false
-        CodeBox.ZIndex = 4
-        CodeBox.Position = prevPos
-        CodeBox.Size = prevSize
-        TweenService:Create(CodeBox, TweenInfo.new(0.5), { Size = UDim2.new(0.5, 0, 0.5, 0), Position = UDim2.new(0.25, 0, 0.25, 0) }):Play()
-        TweenService:Create(disable, TweenInfo.new(0.5), { BackgroundTransparency = 0.5 }):Play()
-        disable.MouseButton1Click:Connect(function()
-            local ml = UserInputService:GetMouseLocation()
-            if ml.Y + 36 >= CodeBox.AbsolutePosition.Y and ml.Y + 36 <= CodeBox.AbsolutePosition.Y + CodeBox.AbsoluteSize.Y
-                and ml.X >= CodeBox.AbsolutePosition.X and ml.X <= CodeBox.AbsolutePosition.X + CodeBox.AbsoluteSize.X then
-                return
-            end
-            TweenService:Create(CodeBox, TweenInfo.new(0.5), { Size = prevSize, Position = prevPos }):Play()
-            TweenService:Create(disable, TweenInfo.new(0.5), { BackgroundTransparency = 1 }):Play()
-            wait(0.5)
-            disable:Destroy()
-            CodeBox.Size = UDim2.new(1, 0, 0.5, 0)
-            CodeBox.Position = UDim2.new(0, 0, 0, 0)
-            CodeBox.ZIndex = 0
-            maximized = false
-        end)
-    end
-end
-
-function isInResizeRange(p)
-    local rel = p - Background.AbsolutePosition
-    local range = 5
-    if rel.X >= TopBar.AbsoluteSize.X - range and rel.Y >= Background.AbsoluteSize.Y - range
-        and rel.X <= TopBar.AbsoluteSize.X and rel.Y <= Background.AbsoluteSize.Y then
-        return true, "B"
-    elseif rel.X >= TopBar.AbsoluteSize.X - range and rel.X <= Background.AbsoluteSize.X then
-        return true, "X"
-    elseif rel.Y >= Background.AbsoluteSize.Y - range and rel.Y <= Background.AbsoluteSize.Y then
-        return true, "Y"
-    end
-    return false
-end
-
-function isInDragRange(p)
-    local rel = p - Background.AbsolutePosition
-    local tAS = TopBar.AbsoluteSize
-    return rel.X <= tAS.X - CloseButton.AbsoluteSize.X * 3 and rel.X >= 0 and rel.Y <= tAS.Y and rel.Y >= 0 or false
-end
-
-function maximizeSize(speed)
-    speed = speed or 0.05
-    local bgX, bgY = Background.AbsoluteSize.X, Background.AbsoluteSize.Y
-    local lpX = LeftPanel.AbsoluteSize.X
-    local tpY = TopBar.AbsoluteSize.Y
-    TweenService:Create(LeftPanel, TweenInfo.new(speed), { Size = UDim2.fromOffset(lpX, bgY - tpY) }):Play()
-    TweenService:Create(RightPanel, TweenInfo.new(speed), { Size = UDim2.fromOffset(bgX - lpX, bgY - tpY) }):Play()
-    TweenService:Create(TopBar, TweenInfo.new(speed), { Size = UDim2.fromOffset(bgX, tpY) }):Play()
-    TweenService:Create(ScrollingFrame, TweenInfo.new(speed), { Size = UDim2.fromOffset(bgX - lpX, 110), Position = UDim2.fromOffset(0, bgY - 119 - tpY) }):Play()
-    TweenService:Create(CodeBox, TweenInfo.new(speed), { Size = UDim2.fromOffset(bgX - lpX, bgY - 119 - tpY) }):Play()
-    TweenService:Create(LogList, TweenInfo.new(speed), { Size = UDim2.fromOffset(LogList.AbsoluteSize.X, bgY - tpY - 18) }):Play()
-end
-
-function minimizeSize(speed)
-    speed = speed or 0.05
-    local bgX, bgY = Background.AbsoluteSize.X, Background.AbsoluteSize.Y
-    local lpX = LeftPanel.AbsoluteSize.X
-    local tpY = TopBar.AbsoluteSize.Y
-    TweenService:Create(LeftPanel, TweenInfo.new(speed), { Size = UDim2.fromOffset(lpX, bgY - tpY) }):Play()
-    TweenService:Create(RightPanel, TweenInfo.new(speed), { Size = UDim2.fromOffset(0, bgY - tpY) }):Play()
-    TweenService:Create(TopBar, TweenInfo.new(speed), { Size = UDim2.fromOffset(lpX, tpY) }):Play()
-    TweenService:Create(ScrollingFrame, TweenInfo.new(speed), { Size = UDim2.fromOffset(0, 119), Position = UDim2.fromOffset(0, bgY - 119 - tpY) }):Play()
-    TweenService:Create(CodeBox, TweenInfo.new(speed), { Size = UDim2.fromOffset(0, bgY - 119 - tpY) }):Play()
-    TweenService:Create(LogList, TweenInfo.new(speed), { Size = UDim2.fromOffset(lpX, bgY - tpY - 18) }):Play()
-end
-
-function validateSize()
-    local x, y = Background.AbsoluteSize.X, Background.AbsoluteSize.Y
-    local screenSize = workspace.CurrentCamera.ViewportSize
-    if x + Background.AbsolutePosition.X > screenSize.X then
-        x = math.max(screenSize.X - Background.AbsolutePosition.X, 450)
-    elseif y + Background.AbsolutePosition.Y > screenSize.Y then
-        y = math.max(screenSize.Y - Background.AbsolutePosition.Y, 268)
-    end
-    Background.Size = UDim2.fromOffset(x, y)
-end
-
-function backgroundUserInput(input)
-    local mousePos = UserInputService:GetMouseLocation() - Vector2.new(0, 36)
-    local inResizeRange, resizeType = isInResizeRange(mousePos)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 and inResizeRange then
-        local lastPos = UserInputService:GetMouseLocation()
-        local offset = Background.AbsoluteSize - lastPos
-        if connections["SIMPLESPY_RESIZE"] then return end
-        connections["SIMPLESPY_RESIZE"] = RunService.RenderStepped:Connect(function()
-            local newPos = UserInputService:GetMouseLocation()
-            if newPos == lastPos then return end
-            local x = math.max((newPos + offset).X, 450)
-            local y = math.max((newPos + offset).Y, 268)
-            Background.Size = UDim2.fromOffset(
-                (not sideClosed and not closed and (resizeType == "X" or resizeType == "B")) and x or Background.AbsoluteSize.X,
-                (not closed and (resizeType == "Y" or resizeType == "B")) and y or Background.AbsoluteSize.Y
-            )
-            validateSize()
-            if sideClosed then minimizeSize() else maximizeSize() end
-            lastPos = newPos
-        end)
-        local endConn
-        endConn = UserInputService.InputEnded:Connect(function(inputE)
-            if input == inputE then
-                if connections["SIMPLESPY_RESIZE"] then
-                    connections["SIMPLESPY_RESIZE"]:Disconnect()
-                    connections["SIMPLESPY_RESIZE"] = nil
-                end
-                endConn:Disconnect()
-            end
-        end)
-    end
+    TweenService:Create(G2L["c"], TweenInfo.new(0.3), {
+        GroupTransparency = closed and 1 or 0
+    }):Play()
+    G2L["c"].Interactable = not closed
 end
 
 function getPlayerFromInstance(instance)
@@ -633,9 +1096,11 @@ end
 function eventSelect(frame)
     if selected and selected.Log then
         if selected.Button then
-            spawn(function()
-                TweenService:Create(selected.Button, TweenInfo.new(0.5), { BackgroundColor3 = Color3.fromRGB(0, 0, 0) }):Play()
-            end)
+            local outline = selected.Button:FindFirstChild("Outline")
+            if outline then
+                TweenService:Create(selected.Button, TweenInfo.new(0.3), { ImageTransparency = 1 }):Play()
+                outline.Visible = false
+            end
         end
         selected = nil
     end
@@ -643,20 +1108,14 @@ function eventSelect(frame)
         if frame == v.Log then selected = v end
     end
     if selected and selected.Log then
-        spawn(function()
-            TweenService:Create(frame.Button, TweenInfo.new(0.5), { BackgroundColor3 = Color3.fromRGB(92, 126, 229) }):Play()
-        end)
+        local outline = frame:FindFirstChild("Outline")
+        if outline then
+            outline.Visible = true
+            TweenService:Create(frame, TweenInfo.new(0.3), { ImageTransparency = 0.75 }):Play()
+        end
         codebox:setRaw(selected.GenScript)
     end
     if sideClosed then toggleSideTray() end
-end
-
-function updateFunctionCanvas()
-    ScrollingFrame.CanvasSize = UDim2.fromOffset(UIGridLayout.AbsoluteContentSize.X, UIGridLayout.AbsoluteContentSize.Y)
-end
-
-function updateRemoteCanvas()
-    LogList.CanvasSize = UDim2.fromOffset(UIListLayout.AbsoluteContentSize.X, UIListLayout.AbsoluteContentSize.Y)
 end
 
 function makeToolTip(enable, text)
@@ -699,18 +1158,35 @@ function makeToolTip(enable, text)
 end
 
 function newButton(name, description, onClick)
-    local FunctionTemplate = Create("Frame", { Name = "FunctionTemplate", Parent = ScrollingFrame, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Size = UDim2.new(0, 117, 0, 23) })
-    local ColorBar = Create("Frame", { Name = "ColorBar", Parent = FunctionTemplate, BackgroundColor3 = Color3.new(1, 1, 1), BorderSizePixel = 0, Position = UDim2.new(0, 7, 0, 10), Size = UDim2.new(0, 7, 0, 18), ZIndex = 3 })
-    local Text = Create("TextLabel", { Text = name, Name = "Text", Parent = FunctionTemplate, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Position = UDim2.new(0, 19, 0, 10), Size = UDim2.new(0, 69, 0, 18), ZIndex = 2, Font = Enum.Font.SourceSans, TextColor3 = Color3.new(1, 1, 1), TextSize = 14, TextStrokeColor3 = Color3.new(0.145098, 0.141176, 0.14902), TextXAlignment = Enum.TextXAlignment.Left })
-    local Button = Create("TextButton", { Name = "Button", Parent = FunctionTemplate, BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.69999998807907, BorderColor3 = Color3.new(1, 1, 1), Position = UDim2.new(0, 7, 0, 10), Size = UDim2.new(0, 80, 0, 18), AutoButtonColor = false, Font = Enum.Font.SourceSans, Text = "", TextColor3 = Color3.new(0, 0, 0), TextSize = 14 })
-    Button.MouseEnter:Connect(function() makeToolTip(true, description()) end)
-    Button.MouseLeave:Connect(function() makeToolTip(false) end)
-    FunctionTemplate.AncestryChanged:Connect(function() makeToolTip(false) end)
-    Button.MouseButton1Click:Connect(function(...)
-        logthread(running())
-        onClick(FunctionTemplate, ...)
+    local btn = ButtonTemplate:Clone()
+    btn.Visible = true
+    btn.Name = "Btn_" .. name
+
+    local lbl = btn:FindFirstChild("CanvasGroup") and btn.CanvasGroup:FindFirstChild("Title")
+    if lbl then lbl.Text = name end
+
+    local click = Instance.new("TextButton")
+    click.Size = UDim2.new(1, 0, 1, 0)
+    click.BackgroundTransparency = 1
+    click.Text = ""
+    click.ZIndex = btn.ZIndex + 5
+    click.Parent = btn
+
+    click.MouseEnter:Connect(function()
+        makeToolTip(true, description())
+        TweenService:Create(btn, TweenInfo.new(0.15), { ImageTransparency = 0.75 }):Play()
     end)
-    updateFunctionCanvas()
+    click.MouseLeave:Connect(function()
+        makeToolTip(false)
+        TweenService:Create(btn, TweenInfo.new(0.15), { ImageTransparency = 0.9 }):Play()
+    end)
+    btn.AncestryChanged:Connect(function() makeToolTip(false) end)
+    click.MouseButton1Click:Connect(function(...)
+        logthread(running())
+        onClick(btn, ...)
+    end)
+
+    btn.Parent = ScrollingFrame
 end
 
 function newRemote(type, data)
@@ -718,10 +1194,19 @@ function newRemote(type, data)
     local remote = data.remote
     local callingscript = data.callingscript
 
-    local RemoteTemplate = Create("Frame", { LayoutOrder = layoutOrderNum, Name = "RemoteTemplate", Parent = LogList, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Size = UDim2.new(0, 117, 0, 27) })
-    local ColorBar = Create("Frame", { Name = "ColorBar", Parent = RemoteTemplate, BackgroundColor3 = (type == "event" and Color3.fromRGB(255, 242, 0)) or Color3.fromRGB(99, 86, 245), BorderSizePixel = 0, Position = UDim2.new(0, 0, 0, 1), Size = UDim2.new(0, 7, 0, 18), ZIndex = 2 })
-    local Text = Create("TextLabel", { TextTruncate = Enum.TextTruncate.AtEnd, Name = "Text", Parent = RemoteTemplate, BackgroundColor3 = Color3.new(1, 1, 1), BackgroundTransparency = 1, Position = UDim2.new(0, 12, 0, 1), Size = UDim2.new(0, 105, 0, 18), ZIndex = 2, Font = Enum.Font.SourceSans, Text = remote.Name, TextColor3 = Color3.new(1, 1, 1), TextSize = 14, TextXAlignment = Enum.TextXAlignment.Left })
-    local Button = Create("TextButton", { Name = "Button", Parent = RemoteTemplate, BackgroundColor3 = Color3.new(0, 0, 0), BackgroundTransparency = 0.75, BorderColor3 = Color3.new(1, 1, 1), Position = UDim2.new(0, 0, 0, 1), Size = UDim2.new(0, 117, 0, 18), AutoButtonColor = false, Font = Enum.Font.SourceSans, Text = "", TextColor3 = Color3.new(0, 0, 0), TextSize = 14 })
+    local item = RemoteTemplate:Clone()
+    item.Visible = true
+    item.LayoutOrder = layoutOrderNum
+    item.Name = "Remote_" .. layoutOrderNum
+
+    local iconFrame = item:FindFirstChild("Content") and item.Content:FindFirstChild("Icon")
+    if iconFrame then
+        iconFrame.ImageColor3 = type == "event"
+            and Color3.fromRGB(78, 33, 255)
+            or  Color3.fromRGB(33, 150, 243)
+    end
+    local titleLabel = item:FindFirstChild("Content") and item.Content:FindFirstChild("Title")
+    if titleLabel then titleLabel.Text = remote.Name end
 
     local log = {
         Name = remote.Name,
@@ -730,8 +1215,8 @@ function newRemote(type, data)
         DebugId = data.id,
         metamethod = data.metamethod,
         args = data.args,
-        Log = RemoteTemplate,
-        Button = Button,
+        Log = item,
+        Button = item,
         Blocked = data.blocked,
         Source = callingscript,
         returnvalue = data.returnvalue,
@@ -739,21 +1224,34 @@ function newRemote(type, data)
     }
 
     logs[#logs + 1] = log
-    local connect = Button.MouseButton1Click:Connect(function()
+
+    item.MouseEnter:Connect(function()
+        if item ~= (selected and selected.Log) then
+            TweenService:Create(item, TweenInfo.new(0.15), { ImageTransparency = 0.85 }):Play()
+        end
+    end)
+    item.MouseLeave:Connect(function()
+        if item ~= (selected and selected.Log) then
+            TweenService:Create(item, TweenInfo.new(0.15), { ImageTransparency = 1 }):Play()
+        end
+    end)
+
+    local connect = item.MouseButton1Click:Connect(function()
         logthread(running())
-        eventSelect(RemoteTemplate)
+        eventSelect(item)
         log.GenScript = genScript(log.Remote, log.args)
         if data.blocked then
             log.GenScript = "-- THIS REMOTE WAS PREVENTED FROM FIRING TO THE SERVER BY SIMPLESPY\n\n" .. log.GenScript
         end
-        if selected == log and RemoteTemplate then
-            eventSelect(RemoteTemplate)
+        if selected == log and item then
+            eventSelect(item)
         end
     end)
+
     layoutOrderNum -= 1
-    table.insert(remoteLogs, 1, { connect, RemoteTemplate })
+    table.insert(remoteLogs, 1, { connect, item })
+    item.Parent = LogList
     clean()
-    updateRemoteCanvas()
 end
 
 function genScript(remote, args)
@@ -763,7 +1261,7 @@ function genScript(remote, args)
         xpcall(function()
             gen = v2v({ args = args }) .. "\n"
         end, function(err)
-            gen ..= "-- An error has occured:\n--" .. err .. "\n-- TableToString failure! Reverting to legacy functionality (results may vary)\nlocal args = {"
+            gen ..= "-- An error has occured:\n--" .. err .. "\n-- TableToString failure!\nlocal args = {"
             xpcall(function()
                 for i, v in next, args do
                     if type(i) ~= "Instance" and type(i) ~= "userdata" then
@@ -787,7 +1285,7 @@ function genScript(remote, args)
                 end
                 gen ..= "\n}\n\n"
             end, function()
-                gen ..= "}\n-- Legacy tableToString failure! Unable to decompile."
+                gen ..= "}\n-- Legacy tableToString failure!"
             end)
         end)
         if not remote:IsDescendantOf(game) and not getnilrequired then
@@ -869,24 +1367,19 @@ ufunctions = {
     UDim2 = function(u) return `UDim2.new({u})` end,
     Rect = function(u) return `Rect.new({ufunctions["Vector2"](u.Min)}, {ufunctions["Vector2"](u.Max)})` end,
     Color3 = function(u) return `Color3.new({u.R}, {u.G}, {u.B})` end,
-    RBXScriptSignal = function(u) return "RBXScriptSignal --[[RBXScriptSignal's are not supported]]" end,
-    RBXScriptConnection = function(u) return "RBXScriptConnection --[[RBXScriptConnection's are not supported]]" end,
+    RBXScriptSignal = function(u) return "RBXScriptSignal --[[not supported]]" end,
+    RBXScriptConnection = function(u) return "RBXScriptConnection --[[not supported]]" end,
 }
 
 local typeofv2sfunctions = {
-    number = function(v)
-        local n = tostring(v)
-        return number_table[n] or n
-    end,
+    number = function(v) local n = tostring(v); return number_table[n] or n end,
     boolean = function(v) return tostring(v) end,
     string = function(v, l) return formatstr(v, l) end,
     ["function"] = function(v) return f2s(v) end,
     table = function(v, l, p, n, vtv, i, pt, path, tables, tI)
         return t2s(v, l, p, n, vtv, i, pt, path, tables, tI)
     end,
-    Instance = function(v)
-        return i2p(v, generation[OldDebugId(v)])
-    end,
+    Instance = function(v) return i2p(v, generation[OldDebugId(v)]) end,
     userdata = function(v)
         if configs.advancedinfo then
             return getrawmetatable(v) and "newproxy(true)" or "newproxy(false)"
@@ -944,10 +1437,7 @@ function t2s(t, l, p, n, vtv, i, pt, path, tables, tI)
     if type(globalIndex) == "string" then return globalIndex end
     if not tI then tI = { 0 } end
     path = path or ""
-    if not l then
-        l = 0
-        tables = {}
-    end
+    if not l then l = 0; tables = {} end
     p = p or t
     for _, v in next, tables do
         if n and rawequal(v, t) then
@@ -962,7 +1452,7 @@ function t2s(t, l, p, n, vtv, i, pt, path, tables, tI)
     for k, v in next, t do
         size = size + 1
         if size > (getgenv().SimpleSpyMaxTableSize or 1000) then
-            s = s .. "\n" .. string.rep(" ", l) .. "-- MAXIMUM TABLE SIZE REACHED, CHANGE 'getgenv().SimpleSpyMaxTableSize' TO ADJUST MAXIMUM SIZE "
+            s = s .. "\n" .. string.rep(" ", l) .. "-- MAXIMUM TABLE SIZE REACHED"
             break
         end
         if rawequal(k, t) then
@@ -974,7 +1464,7 @@ function t2s(t, l, p, n, vtv, i, pt, path, tables, tI)
         if type(k) == "string" and k:match("^[%a_]+[%w_]*$") then
             currentPath = "." .. k
         else
-            currentPath = "[" .. v2s(k, l, p, n, vtv, k, t, path .. currentPath, tables, tI) .. "]"
+            currentPath = "[" .. v2s(k, l, p, n, vtv, k, t, path, tables, tI) .. "]"
         end
         if size % 100 == 0 then scheduleWait() end
         s = s .. "\n" .. string.rep(" ", l) .. "[" .. v2s(k, l, p, n, vtv, k, t, path .. currentPath, tables, tI) .. "] = " .. v2s(v, l, p, n, vtv, k, t, path .. currentPath, tables, tI) .. ","
@@ -1114,7 +1604,7 @@ end
 function formatstr(s, indentation)
     indentation = indentation or 0
     local handled, reachedMax = handlespecials(s, indentation)
-    return '"' .. handled .. '"' .. (reachedMax and " --[[ MAXIMUM STRING SIZE REACHED, CHANGE 'getgenv().SimpleSpyMaxStringSize' TO ADJUST MAXIMUM SIZE ]]" or "")
+    return '"' .. handled .. '"' .. (reachedMax and " --[[ MAXIMUM STRING SIZE REACHED ]]" or "")
 end
 
 local function isFinished(coroutines)
@@ -1170,50 +1660,6 @@ function handlespecials(s, indentation)
         return s, true
     end
     return s, false
-end
-
-function getScriptFromSrc(src)
-    local realPath
-    local runningTest
-    local s, e
-    local match = false
-    if src:sub(1, 1) == "=" then
-        realPath = game
-        s = 2
-    else
-        runningTest = src:sub(2, e and e - 1 or -1)
-        for _, v in next, getnilinstances() do
-            if v.Name == runningTest then realPath = v; break end
-        end
-        s = #runningTest + 1
-    end
-    if realPath then
-        e = src:sub(s, -1):find("%.")
-        local iter = 0
-        repeat
-            iter += 1
-            if not e then
-                runningTest = src:sub(s, -1)
-                local test = realPath:FindFirstChild(runningTest)
-                if test then realPath = test end
-                match = true
-            else
-                runningTest = src:sub(s, e)
-                local test = realPath:FindFirstChild(runningTest)
-                local yeOld = e
-                if test then
-                    realPath = test
-                    s = e + 2
-                    e = src:sub(e + 2, -1):find("%.")
-                    e = e and e + yeOld or e
-                else
-                    e = src:sub(e + 2, -1):find("%.")
-                    e = e and e + yeOld or e
-                end
-            end
-        until match or iter >= 50
-    end
-    return realPath
 end
 
 function schedule(f, ...)
@@ -1410,6 +1856,8 @@ local function shutdown()
     getgenv().SimpleSpyExecuted = false
 end
 
+local Highlight = (isfile and loadfile and isfile("Highlight.lua") and loadfile("Highlight.lua")()) or loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/Highlight.lua"))()
+
 if not getgenv().SimpleSpyExecuted then
     local succeeded, err = pcall(function()
         if not RunService:IsClient() then
@@ -1418,7 +1866,7 @@ if not getgenv().SimpleSpyExecuted then
         getgenv().SimpleSpyShutdown = shutdown
         onToggleButtonClick()
         if not hookmetamethod then
-            ErrorPrompt("Simple Spy V3 will not function to it's fullest capablity due to your executor not supporting hookmetamethod.", true)
+            ErrorPrompt("Simple Spy will not function to its fullest due to your executor not supporting hookmetamethod.", true)
         end
         codebox = Highlight.new(CodeBox)
         logthread(spawn(function()
@@ -1432,32 +1880,18 @@ if not getgenv().SimpleSpyExecuted then
             end
         end
         TextLabel:GetPropertyChangedSignal("Text"):Connect(scaleToolTip)
-        MinimizeButton.MouseButton1Click:Connect(toggleMinimize)
-        MaximizeButton.MouseButton1Click:Connect(toggleSideTray)
+        MinimizeButton.MouseButton1Click:Connect(toggleSideTray)
+        MaximizeButton.MouseButton1Click:Connect(toggleMinimize)
         Simple.MouseButton1Click:Connect(onToggleButtonClick)
-        CloseButton.MouseEnter:Connect(onXButtonHover)
-        CloseButton.MouseLeave:Connect(onXButtonUnhover)
         Simple.MouseEnter:Connect(onToggleButtonHover)
         Simple.MouseLeave:Connect(onToggleButtonUnhover)
         CloseButton.MouseButton1Click:Connect(shutdown)
-        connections["InputBegan"] = UserInputService.InputBegan:Connect(backgroundUserInput)
-
-		TopBar.InputBegan:Connect(function(input)
-			if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
-			local mouseX = input.Position.X
-			local buttonBoundary = CloseButton.AbsolutePosition.X
-			if mouseX < buttonBoundary then
-				onBarInput(input)
-			end
-		end)
-
         connectResize()
         SimpleSpy3.Enabled = true
         logthread(spawn(function()
             delay(1, onToggleButtonUnhover)
         end))
         schedulerconnect = RunService.Heartbeat:Connect(taskscheduler)
-        bringBackOnResize()
         SimpleSpy3.Parent = (gethui and gethui()) or (syn and syn.protect_gui and syn.protect_gui(SimpleSpy3)) or CoreGui
         logthread(spawn(function()
             local lp = Players.LocalPlayer or Players:GetPropertyChangedSignal("LocalPlayer"):Wait() or Players.LocalPlayer
@@ -1508,16 +1942,16 @@ newButton("Run Code", function() return "Click to execute code" end, function()
             else
                 returnvalue = Remote:InvokeServer(unpack(selected.args))
             end
-            TextLabel.Text = ("Executed successfully!\n%s"):format(v2s(returnvalue))
+            TextLabel.Text = ("Executed!\n%s"):format(v2s(returnvalue))
         end, function(err)
-            TextLabel.Text = ("Execution error!\n%s"):format(err)
+            TextLabel.Text = ("Error!\n%s"):format(err)
         end)
         return
     end
     TextLabel.Text = "Source not found"
 end)
 
-newButton("Get Script", function() return "Click to copy calling script to clipboard\nWARNING: Not super reliable, nil == could not find" end, function()
+newButton("Get Script", function() return "Click to copy calling script\nWARNING: Not super reliable" end, function()
     if selected then
         if not selected.Source then
             selected.Source = rawget(getfenv(selected.Function), "script")
@@ -1527,19 +1961,19 @@ newButton("Get Script", function() return "Click to copy calling script to clipb
     end
 end)
 
-newButton("Function Info", function() return "Click to view calling function information" end, function()
+newButton("Func Info", function() return "Click to view calling function information" end, function()
     local func = selected and selected.Function
     if func then
         local typeoffunc = typeof(func)
         if typeoffunc ~= "string" then
-            codebox:setRaw("--[[Generating Function Info please wait]]")
+            codebox:setRaw("--[[Generating Function Info]]")
             RunService.Heartbeat:Wait()
             local lclosure = islclosure(func)
             local SourceScript = rawget(getfenv(func), "script")
             local CallingScript = selected.Source or nil
             local funcinfo = {
                 info = getinfo(func),
-                constants = lclosure and deepclone(getconstants(func)) or "N/A --Lua Closure expected got C Closure",
+                constants = lclosure and deepclone(getconstants(func)) or "N/A",
                 upvalues = deepclone(getupvalues(func)),
                 script = {
                     SourceScript = SourceScript or "nil",
@@ -1555,10 +1989,10 @@ newButton("Function Info", function() return "Click to view calling function inf
                         CallingScriptDebugId = CallingScript and typeof(SourceScript) == "Instance" and OldDebugId(CallingScript) or "N/A",
                         RemoteDebugId = OldDebugId(Remote)
                     },
-                    Protos = lclosure and getprotos(func) or "N/A --Lua Closure expected got C Closure"
+                    Protos = lclosure and getprotos(func) or "N/A"
                 }
                 if Remote:IsA("RemoteFunction") then
-                    funcinfo["advancedinfo"]["OnClientInvoke"] = getcallbackmember and (getcallbackmember(Remote, "OnClientInvoke") or "N/A") or "N/A --Missing function getcallbackmember"
+                    funcinfo["advancedinfo"]["OnClientInvoke"] = getcallbackmember and (getcallbackmember(Remote, "OnClientInvoke") or "N/A") or "N/A"
                 elseif getconnections then
                     funcinfo["advancedinfo"]["OnClientEvents"] = {}
                     for i, v in next, getconnections(Remote.OnClientEvent) do
@@ -1569,13 +2003,13 @@ newButton("Function Info", function() return "Click to view calling function inf
                     end
                 end
             end
-            codebox:setRaw("--[[Converting table to string please wait]]")
+            codebox:setRaw("--[[Converting table]]")
             selected.Function = v2v({ functionInfo = funcinfo })
         end
-        codebox:setRaw("-- Calling function info\n-- Generated by the SimpleSpy V3 serializer\n\n" .. selected.Function)
-        TextLabel.Text = "Done! Function info generated by the SimpleSpy V3 Serializer."
+        codebox:setRaw("-- Calling function info\n-- Generated by SimpleSpy\n\n" .. selected.Function)
+        TextLabel.Text = "Done!"
     else
-        TextLabel.Text = "Error! Selected function was not found."
+        TextLabel.Text = "Error! Function not found."
     end
 end)
 
@@ -1583,47 +2017,49 @@ newButton("Clr Logs", function() return "Click to clear logs" end, function()
     TextLabel.Text = "Clearing..."
     clear(logs)
     for _, v in next, LogList:GetChildren() do
-        if not v:IsA("UIListLayout") then v:Destroy() end
+        if not v:IsA("UIListLayout") and not v:IsA("UIPadding") and v ~= RemoteTemplate then
+            v:Destroy()
+        end
     end
     codebox:setRaw("")
     selected = nil
     TextLabel.Text = "Logs cleared!"
 end)
 
-newButton("Exclude (i)", function() return "Click to exclude this Remote.\nExcluding a remote makes SimpleSpy ignore it, but it will continue to be usable." end, function()
+newButton("Excl (i)", function() return "Click to exclude this Remote by ID." end, function()
     if selected then
         blacklist[OldDebugId(selected.Remote)] = true
         TextLabel.Text = "Excluded!"
     end
 end)
 
-newButton("Exclude (n)", function() return "Click to exclude all remotes with this name.\nExcluding a remote makes SimpleSpy ignore it, but it will continue to be usable." end, function()
+newButton("Excl (n)", function() return "Click to exclude all remotes with this name." end, function()
     if selected then
         blacklist[selected.Name] = true
         TextLabel.Text = "Excluded!"
     end
 end)
 
-newButton("Clr Blacklist", function() return "Click to clear the blacklist.\nExcluding a remote makes SimpleSpy ignore it, but it will continue to be usable." end, function()
+newButton("Clr Excl", function() return "Click to clear the exclusion list." end, function()
     blacklist = {}
-    TextLabel.Text = "Blacklist cleared!"
+    TextLabel.Text = "Exclusion list cleared!"
 end)
 
-newButton("Block (i)", function() return "Click to stop this remote from firing.\nBlocking a remote won't remove it from SimpleSpy logs, but it will not continue to fire the server." end, function()
+newButton("Block (i)", function() return "Click to stop this remote from firing." end, function()
     if selected then
         blocklist[OldDebugId(selected.Remote)] = true
-        TextLabel.Text = "Excluded!"
+        TextLabel.Text = "Blocked!"
     end
 end)
 
-newButton("Block (n)", function() return "Click to stop remotes with this name from firing.\nBlocking a remote won't remove it from SimpleSpy logs, but it will not continue to fire the server." end, function()
+newButton("Block (n)", function() return "Click to stop remotes with this name from firing." end, function()
     if selected then
         blocklist[selected.Name] = true
-        TextLabel.Text = "Excluded!"
+        TextLabel.Text = "Blocked!"
     end
 end)
 
-newButton("Clr Blocklist", function() return "Click to stop blocking remotes.\nBlocking a remote won't remove it from SimpleSpy logs, but it will not continue to fire the server." end, function()
+newButton("Clr Block", function() return "Click to stop blocking remotes." end, function()
     blocklist = {}
     TextLabel.Text = "Blocklist cleared!"
 end)
@@ -1641,7 +2077,7 @@ newButton("Decompile", function() return "Decompile source script" end, function
                         DecompiledScripts[Source] = ("local script = %s\n%s"):format(Sourcev2s, decompiledsource)
                     end
                 end, function(err)
-                    return codebox:setRaw(("--[[\nAn error has occured\n%s\n]]"):format(err))
+                    return codebox:setRaw(("--[[\nError\n%s\n]]"):format(err))
                 end)
             end
             codebox:setRaw(DecompiledScripts[Source] or "--No Source Found")
@@ -1654,56 +2090,40 @@ newButton("Decompile", function() return "Decompile source script" end, function
     end
 end)
 
-newButton("Disable Info", function()
-    return string.format("[%s] Toggle function info (because it can cause lag in some games)", configs.funcEnabled and "ENABLED" or "DISABLED")
+newButton("Func Toggle", function()
+    return string.format("[%s] Toggle function info", configs.funcEnabled and "ON" or "OFF")
 end, function()
     configs.funcEnabled = not configs.funcEnabled
-    TextLabel.Text = string.format("[%s] Toggle function info (because it can cause lag in some games)", configs.funcEnabled and "ENABLED" or "DISABLED")
+    TextLabel.Text = string.format("[%s] Function info", configs.funcEnabled and "ON" or "OFF")
 end)
 
 newButton("Autoblock", function()
-    return string.format("[%s] [BETA] Intelligently detects and excludes spammy remote calls from logs", configs.autoblock and "ENABLED" or "DISABLED")
+    return string.format("[%s] Auto-block spammy remotes", configs.autoblock and "ON" or "OFF")
 end, function()
     configs.autoblock = not configs.autoblock
-    TextLabel.Text = string.format("[%s] [BETA] Intelligently detects and excludes spammy remote calls from logs", configs.autoblock and "ENABLED" or "DISABLED")
+    TextLabel.Text = string.format("[%s] Autoblock", configs.autoblock and "ON" or "OFF")
     history = {}
     excluding = {}
 end)
 
-newButton("Logcheckcaller", function()
-    return ("[%s] Log remotes fired by the client"):format(configs.logcheckcaller and "ENABLED" or "DISABLED")
+newButton("LogCaller", function()
+    return ("[%s] Log client-fired remotes"):format(configs.logcheckcaller and "ON" or "OFF")
 end, function()
     configs.logcheckcaller = not configs.logcheckcaller
-    TextLabel.Text = ("[%s] Log remotes fired by the client"):format(configs.logcheckcaller and "ENABLED" or "DISABLED")
+    TextLabel.Text = ("[%s] LogCaller"):format(configs.logcheckcaller and "ON" or "OFF")
 end)
 
-newButton("Advanced Info", function()
-    return ("[%s] Display more remoteinfo"):format(configs.advancedinfo and "ENABLED" or "DISABLED")
+newButton("Adv Info", function()
+    return ("[%s] Advanced remote info"):format(configs.advancedinfo and "ON" or "OFF")
 end, function()
     configs.advancedinfo = not configs.advancedinfo
-    TextLabel.Text = ("[%s] Display more remoteinfo"):format(configs.advancedinfo and "ENABLED" or "DISABLED")
+    TextLabel.Text = ("[%s] Advanced Info"):format(configs.advancedinfo and "ON" or "OFF")
 end)
 
-newButton("Join Discord", function() return "Joins The Simple Spy Discord" end, function()
-    setclipboard("https://discord.com/invite/AWS6ez9")
-    TextLabel.Text = "Copied invite to your clipboard"
+newButton("Discord", function() return "Copy SimpleSpy Discord invite" end, function()
+    setclipboard("https://discord.gg/U8VMBKvG5t")
+    TextLabel.Text = "Copied invite!"
     if request then
         request({ Url = "http://127.0.0.1:6463/rpc?v=1", Method = "POST", Headers = { ["Content-Type"] = "application/json", Origin = "https://discord.com" }, Body = http:JSONEncode({ cmd = "INVITE_BROWSER", nonce = http:GenerateGUID(false), args = { code = "AWS6ez9" } }) })
     end
 end)
-
-if configs.supersecretdevtoggle then
-    newButton("Load SSV2.2", function() return "Load's Simple Spy V2.2" end, function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/exxtremestuffs/SimpleSpySource/master/SimpleSpy.lua"))()
-    end)
-    newButton("Load SSV3", function() return "Load's Simple Spy V3" end, function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpySource.lua"))()
-    end)
-    local SuperSecretFolder = Create("Folder", { Parent = SimpleSpy3 })
-    newButton("SUPER SECRET BUTTON", function() return "You dont need a discription you already know what it does" end, function()
-        SuperSecretFolder:ClearAllChildren()
-        local random = listfiles("Music")
-        local NotSound = Create("Sound", { Parent = SuperSecretFolder, Looped = false, Volume = math.random(1, 5), SoundId = getsynasset(random[math.random(1, #random)]) })
-        NotSound:Play()
-    end)
-end
