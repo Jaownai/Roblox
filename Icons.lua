@@ -1,0 +1,152 @@
+return {
+    Workspace = "rbxassetid://88307223551463", 
+    Camera = "rbxassetid://82309453186589", 
+    Terrain = "rbxassetid://96520222125281", 
+    WorldModel = "rbxassetid://113907494866613", 
+
+    Players = "rbxassetid://105927764112764", 
+    Player = "rbxassetid://108566895673522", 
+    StarterCharacterScripts = "rbxassetid://100941075849856",
+    StarterPlayerScripts = "rbxassetid://91096349184880",
+
+    Lighting = "rbxassetid://125207457780821", 
+    ReplicatedStorage = "rbxassetid://128669857777817", 
+    ReplicatedFirst = "rbxassetid://118079374613194",
+    ServerStorage = "rbxassetid://92260933861263", 
+    ServerScriptService = "rbxassetid://123369035809530", 
+    StarterGui = "rbxassetid://104786240229124", 
+    StarterPack = "rbxassetid://115295330523699", 
+    StarterPlayer = "rbxassetid://108566895673522", 
+    SoundService = "rbxassetid://113906129994819", 
+    TextChatService = "rbxassetid://125412326005005", 
+    Teams = "rbxassetid://103219490532528", 
+    Chat = "rbxassetid://116379019355270", 
+
+    Folder = "rbxassetid://133550922498178", 
+    Model = "rbxassetid://109140098330902", 
+    Configuration = "rbxassetid://75976029450707", 
+
+    Part = "rbxassetid://112554187267300", 
+    MeshPart = "rbxassetid://123425363332306", 
+    UnionOperation = "rbxassetid://106845852666818", 
+    NegateOperation = "rbxassetid://125599851635371", 
+    TrussPart = "rbxassetid://83222649050645", 
+    WedgePart = "rbxassetid://124054944870681", 
+    CornerWedgePart = "rbxassetid://117771952671877", 
+    SpawnLocation = "rbxassetid://131011394030483", 
+    Seat = "rbxassetid://108465632782899", 
+    VehicleSeat = "rbxassetid://74764046150076", 
+
+    Humanoid = "rbxassetid://124549827202506", 
+    Animator = "rbxassetid://122574870178183", 
+    Accessory = "rbxassetid://106023938955353", 
+    HumanoidDescription = "rbxassetid://91725624538647", 
+    Shirt = "rbxassetid://73229130920664", 
+    Pants = "rbxassetid://121679253045022", 
+    ShirtGraphic = "rbxassetid://105678401183837", 
+    BodyColors = "rbxassetid://97856819282928", 
+
+    Tool = "rbxassetid://78401638751003", 
+
+    Script = "rbxassetid://120286478809363", 
+    LocalScript = "rbxassetid://102785166315687", 
+    ModuleScript = "rbxassetid://89026102437923", 
+
+    RemoteEvent = "rbxassetid://76849082320169", 
+    RemoteFunction = "rbxassetid://109202898110957", 
+    BindableEvent = "rbxassetid://98849709807755", 
+    BindableFunction = "rbxassetid://96448937828710", 
+
+    ScreenGui = "rbxassetid://117458804814861", 
+    SurfaceGui = "rbxassetid://112917691945993", 
+    BillboardGui = "rbxassetid://140293089659747", 
+    ViewportFrame = "rbxassetid://138236451947823", 
+
+    Frame = "rbxassetid://72890093407248", 
+    ScrollingFrame = "rbxassetid://82235647684081", 
+    CanvasGroup = "rbxassetid://96071796605306", 
+
+    TextLabel = "rbxassetid://124828609629536", 
+    TextButton = "rbxassetid://77005547306746", 
+    TextBox = "rbxassetid://136710014154574", 
+
+    ImageLabel = "rbxassetid://73292882816606", 
+    ImageButton = "rbxassetid://111834290360012", 
+
+    UIListLayout = "rbxassetid://103077426126877", 
+    UIGridLayout = "rbxassetid://105349701034218", 
+    UITableLayout = "rbxassetid://111805591434107", 
+    UIPageLayout = "rbxassetid://117913009196324", 
+
+    UIPadding = "rbxassetid://108456572461597", 
+    UICorner = "rbxassetid://87384582092549", 
+    UIStroke = "rbxassetid://97924383799599", 
+    UIGradient = "rbxassetid://73928082947722", 
+    UIScale = "rbxassetid://116895906263526", 
+    UIAspectRatioConstraint = "rbxassetid://103167299607851", 
+    UISizeConstraint = "rbxassetid://72234572444915", 
+
+    Sound = "rbxassetid://77303891039881", 
+    SoundGroup = "rbxassetid://95658918118821", 
+
+    Animation = "rbxassetid://131732895984974", 
+    AnimationController = "rbxassetid://131732895984974", 
+
+    Decal = "rbxassetid://", 
+    Texture = "rbxassetid://125506381739740", 
+    SurfaceAppearance = "rbxassetid://73880001737208", 
+    SpecialMesh = "rbxassetid://112751238591380", 
+
+    ParticleEmitter = "rbxassetid://113391673099861", 
+    Beam = "rbxassetid://129161460650543", 
+    Trail = "rbxassetid://76502273723972", 
+    Fire = "rbxassetid://120636442439172", 
+    Smoke = "rbxassetid://94222055884868", 
+    Sparkles = "rbxassetid://96980998135873", 
+    Highlight = "rbxassetid://124622567035307", 
+
+    Attachment = "rbxassetid://70966340393922", 
+
+    Weld = "rbxassetid://119436936392339", 
+    WeldConstraint = "rbxassetid://111461220209873", 
+    Motor6D = "rbxassetid://105944540289505", 
+
+    HingeConstraint = "rbxassetid://139809148215807", 
+    BallSocketConstraint = "rbxassetid://104469428881075", 
+    RopeConstraint = "rbxassetid://", 
+    RodConstraint = "rbxassetid://125771067218429", 
+    SpringConstraint = "rbxassetid://128581843318840", 
+
+    ClickDetector = "rbxassetid://103893238295390", 
+    ProximityPrompt = "rbxassetid://114397136817006", 
+    TouchTransmitter = "rbxassetid://100509868662557", 
+
+    Sky = "rbxassetid://133934907370624", 
+    Atmosphere = "rbxassetid://102261370391506", 
+    BloomEffect = "rbxassetid://124088977400175", 
+    BlurEffect = "rbxassetid://72124169114357", 
+    ColorCorrectionEffect = "rbxassetid://135145033012232", 
+    DepthOfFieldEffect = "rbxassetid://128683170034174", 
+    SunRaysEffect = "rbxassetid://83451469469047", 
+
+    ObjectValue = "rbxassetid://132621015337345", 
+    StringValue = "rbxassetid://98898354301651", 
+    IntValue = "rbxassetid://121195468719081", 
+    NumberValue = "rbxassetid://91187537551902", 
+    BoolValue = "rbxassetid://75014109707601", 
+    Vector3Value = "rbxassetid://123353226308727", 
+    Color3Value = "rbxassetid://95857983485451", 
+    CFrameValue = "rbxassetid://129088527466046", 
+
+    CoreGui = "rbxassetid://100064599296791", 
+    CorePackages = "rbxassetid://92467608835040", 
+    CoreScriptSyncService = "rbxassetid://77030372615475", 
+    CoreScript = "rbxassetid://136260783942881", 
+
+    BubbleChatConfiguration = "rbxassetid://70520326980404",
+    ChatInputBarConfiguration = "rbxassetid://110085650089417",
+    ChatWindowConfiguration = "rbxassetid://113356060816648",
+    
+    MaterialService = "rbxassetid://104791722254609",
+    NetworkClient = "rbxassetid://91853221583226",
+}
