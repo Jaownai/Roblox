@@ -1,5 +1,4 @@
 if IY_LOADED and not _G.IY_DEBUG == true then
-	-- error("Infinite Yield is already running!",0)
 	return
 end
 
@@ -17,6 +16,30 @@ end
 currentVersion = '5.9.3'
 
 Players = game:GetService("Players")
+LocalPlayer = Players.LocalPlayer
+
+local function SetupAntiAFK()
+        local getconnections = getconnections or get_signal_cons
+        if getconnections then
+            for _, connection in pairs(getconnections(LocalPlayer.Idled)) do
+                if connection["Disable"] then
+                    connection["Disable"](connection)
+                elseif connection["Disconnect"] then
+                    connection["Disconnect"](connection)
+                end
+            end
+        else
+            local VirtualUser = cloneref(game:GetService("VirtualUser"))
+            LocalPlayer.Idled:Connect(function()
+                VirtualUser:CaptureController()
+                VirtualUser:ClickButton2(Vector2.new())
+            end)
+        end
+
+        print("Anti-AFK Loaded")
+    end
+
+SetupAntiAFK()
 
 Holder = Instance.new("Frame")
 Title = Instance.new("TextLabel")
@@ -10019,7 +10042,7 @@ end)
 
 addcmd('remotespy',{'rspy'},function(args, speaker)
 	notify("Loading",'Hold on a sec')
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/DarkNetworks/Infinite-Yield/main/SimpleSpyV3/main.lua"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/Jaownai/Roblox/refs/heads/main/RemoteSpy.lua"))()
 end)
 
 addcmd('audiologger',{'alogger'},function(args, speaker)
