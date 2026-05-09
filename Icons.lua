@@ -6,6 +6,7 @@ return {
 
     Players = "rbxassetid://105927764112764", 
     Player = "rbxassetid://108566895673522", 
+    Backpack = "rbxassetid://115295330523699",
     StarterCharacterScripts = "rbxassetid://100941075849856",
     StarterPlayerScripts = "rbxassetid://91096349184880",
 
